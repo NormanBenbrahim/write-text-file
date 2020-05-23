@@ -10,7 +10,7 @@ import feedparser
 
 class WatchFiveThirtyEight():
 
-    def watch_rss(self, rss_feed):
+    def watch_rss(self, rss_feed, out_name):
         """
         TODO docs
         """
@@ -28,6 +28,8 @@ class WatchFiveThirtyEight():
             times = []
             urls = []
             titles = [] 
+            summaries = []
+
             for article in articles:
                 # get published times
                 raw_time = article['published']
@@ -45,11 +47,15 @@ class WatchFiveThirtyEight():
                 title = article['title']
                 titles.append(title)
 
-            # collect into a dataframe
-            dataset = pd.DataFrame({"title": titles, "link": urls, })
-            print(dataset)
+                # get summary of article
+                summary = article['summary']
+                summaries.append(summary)
 
-                
+            # collect into a dataframe
+            dataset = pd.DataFrame({"title": titles, "link": urls, "summary":summary})
+            
+            # write to txt file 
+            dataset.to_csv('output.txt', index=False)
 
 
         except Exception as e: 
@@ -64,6 +70,8 @@ if __name__ == '__main__':
 
     # print some output messages
     rss_fname = argv[1]
+    outname = argv[2]
 
     print("starting app")
-    app.watch_rss(argv[1])
+    app.watch_rss(argv[1], argv[2])
+    print("output text file created as '{}' ".format(outname))
