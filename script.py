@@ -4,6 +4,7 @@ import os
 from sys import argv
 import time 
 from datetime import datetime
+from time import mktime 
 import feedparser 
 
 
@@ -14,16 +15,22 @@ class WatchFiveThirtyEight():
         TODO docs
         """
         try:
-            # data source
+            # get current time
+            now = datetime.now()
+            
+            # parse data source
             newsfeed = feedparser.parse(rss_feed)
 
-            # get first 15 entries
-            entries = newsfeed.entries[1:100]
+            # get all articles
+            articles = newsfeed.entries
 
-            for entry in entries:
-                print('entry: {}'.format(entry))
+            for article in articles:
+                # get published times
+                raw_time = article['published_parsed']
 
-            pass
+                # convert to datetime object
+                format_time = datetime.fromtimestamp(mktime(raw_time))
+
 
         except Exception as e: 
             print("an error occured: {}".format(e))
@@ -48,9 +55,6 @@ if __name__ == '__main__':
 
     # start the app
     app = WatchFiveThirtyEight()
-
-    # get the current time
-    current_time = datetime.now()
 
     # print some output messages
     rss_fname = argv[1]
