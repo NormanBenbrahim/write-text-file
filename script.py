@@ -2,39 +2,41 @@ import numpy as np
 import pandas as pd 
 import os 
 from sys import argv
+import time 
+from datetime import datetime
+import feedparser 
 
 
+class WatchFiveThirtyEight():
 
-class MyApp():
-
-    def create_sample_data(self, data_fname):
+    def watch_rss(self, rss_feed):
         """
         TODO docs
         """
-
         try:
+            # data source
+            newsfeed = feedparser.parse(rss_feed)
 
-            # number of rows in the file
-            shape = 1000
+            # get first 15 entries
+            entries = newsfeed.entries[1:100]
 
-            hours = np.random.randint(100*9, size=shape)
-            accounts = np.array([x+1 for x in range(shape)])
+            for entry in entries:
+                print('entry: {}'.format(entry))
 
-            # sampling from the normal distribution and adding 50 to make
-            # it a realistic rate
-            rates = 50 + np.random.randn(shape)
-            total_cost = hours*rates
+            pass
 
-            # collect the data
-            dataset = pd.DataFrame({"account_number": accounts, "billable_hours": hours, "rate": rates, "total": total_cost})
+        except Exception as e: 
+            print("an error occured: {}".format(e))
+            return None 
 
-            # save as file
-            dataset.to_csv(data_fname, index=False)
 
-        except Exception as e:
-            print("error occured: {}".format(e))
 
-        def 
+    # TODO create db function
+    def create_database(self):
+        pass
+
+
+
 
                                 
 
@@ -45,14 +47,13 @@ class MyApp():
 if __name__ == '__main__':
 
     # start the app
-    app = MyApp()
+    app = WatchFiveThirtyEight()
+
+    # get the current time
+    current_time = datetime.now()
 
     # print some output messages
-    data_fname = argv[1]
+    rss_fname = argv[1]
 
-    if os.path.exists(data_fname):
-        print("sample file {} already exists, deleting".format(data_fname))
-        os.remove(data_fname)
-    
-    print("creating sample data")
-    app.create_sample_data(data_fname)
+    print("starting app")
+    app.watch_rss(argv[1])
