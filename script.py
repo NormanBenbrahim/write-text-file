@@ -24,31 +24,37 @@ class WatchFiveThirtyEight():
             # get all articles
             articles = newsfeed.entries
 
+            # initiate arrays
+            times = []
+            urls = []
+            titles = [] 
             for article in articles:
                 # get published times
-                raw_time = article['published_parsed']
+                raw_time = article['published']
+                format_time = raw_time[:-6]
 
                 # convert to datetime object
-                format_time = datetime.fromtimestamp(mktime(raw_time))
+                #format_time = datetime.fromtimestamp(mktime(raw_time))
+                times.append(format_time)
+
+                # get url
+                url = article['url']
+                urls.append(url)
+
+                # get title
+                title = article['title']
+                titles.append(title)
+
+            # collect into a dataframe
+            dataset = pd.DataFrame({"title": titles, "link": urls, })
+            print(dataset)
+
+                
 
 
         except Exception as e: 
             print("an error occured: {}".format(e))
-            return None 
-
-
-
-    # TODO create db function
-    def create_database(self):
-        pass
-
-
-
-
-                                
-
-
-    #self.create_sample_data()
+            return None                              
 
 
 if __name__ == '__main__':
